@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">SITU Bluetooth Sample</string>
+    <string name="status_label">Status:</string>
+    <string name="status">Disconnected</string>
+    <string name="weight">N/A</string>
+    <string name="action_settings">Settings</string>
+</resources>
