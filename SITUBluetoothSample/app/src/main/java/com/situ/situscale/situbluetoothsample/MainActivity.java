@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.situ.situscale.bluetooth.SITUBluetoothEvent;
 import com.situ.situscale.bluetooth.SITUBluetoothService;
@@ -66,9 +67,13 @@ public class MainActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case PERMISSION_REQUEST_CODE:
-                if (grantResults.length > 0 &&
-                        grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    _onCreate();
+                if (grantResults.length > 0) {
+                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        _onCreate();
+                    }
+                    else {
+                        Toast.makeText(this, "Bluetooth cannot be accessed.", Toast.LENGTH_LONG).show();
+                    }
                 }
                 break;
         }
