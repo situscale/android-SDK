@@ -1,8 +1,10 @@
 package com.situ.situscale.situbluetoothsample;
 
+import android.Manifest;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +19,8 @@ import com.situ.situscale.bluetooth.SITUBluetoothService;
 import de.greenrobot.event.EventBus;
 
 public class MainActivity extends AppCompatActivity {
+    private static final int PERMISSION_REQUEST_CODE = 1;
+
     private final static String TAG = MainActivity.class.getSimpleName();
     private TextView mConnectionState;
     private TextView mWeight;
@@ -45,6 +49,32 @@ public class MainActivity extends AppCompatActivity {
 
         EventBus.getDefault().register(this);
 
+        // We need to ask for the device's location on Android 6 and above to connect via BTLE
+        if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_DENIED) {
+            Log.d("permission", "permission denied to access bluetooth - requesting it...");
+            String[] permissions = {Manifest.permission.ACCESS_COARSE_LOCATION};
+            requestPermissions(permissions, PERMISSION_REQUEST_CODE);
+        }
+        else {
+            _onCreate();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE:
+                if (grantResults.length > 0 &&
+                        grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    _onCreate();
+                }
+                break;
+        }
+    }
+
+    private void _onCreate() {
         mConnectionState = (TextView) findViewById(R.id.status);
         mConnectionState.setTextColor(Color.RED);
         mWeight = (TextView) findViewById(R.id.weight);
